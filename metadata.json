@@ -1,0 +1,6 @@
+{
+  "name": "QMS Audit Module",
+  "description": "Quality Management System Audit Module with Library, Audit Templates, Decision Matrices, Audit Plans, and Audit Requests.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

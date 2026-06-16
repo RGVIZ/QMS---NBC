@@ -3,11 +3,1922 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
+    <title>QMS Multi-Tier Audit Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              slate: {
+                350: '#cbd5e1',
+                450: '#94a3b8',
+                505: '#64748b',
+                550: '#475569',
+                655: '#334155',
+                755: '#1e293b',
+                805: '#0f172a'
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace']
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+      body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.45);
+      }
+      .glass-card-heavy {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+      }
+      .glass-input {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(203, 213, 225, 0.6);
+        transition: all 0.2s ease;
+      }
+      .glass-input:focus {
+        background: rgba(255, 255, 255, 0.95);
+        border-color: rgba(37, 99, 235, 0.7);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      }
+      /* Custom Animations */
+      .anim-fade {
+        animation: fadeIn 0.2s ease-out forwards;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+  <body class="text-slate-805 antialiased font-sans">
+    
+    <!-- Master Screen Panel Layout -->
+    <div class="flex min-h-screen">
+      
+      <!-- Primary Sidebar Navigation -->
+      <aside class="w-64 bg-slate-805 text-white flex flex-col border-r border-slate-755 shrink-0">
+        <!-- Logo Branding Header -->
+        <div class="p-6 border-b border-slate-755">
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-blue-600 rounded-lg">
+              <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+            </div>
+            <div>
+              <h1 class="text-sm font-extrabold tracking-wide uppercase">Crest QMS</h1>
+              <span class="text-[10px] text-blue-400 font-bold font-mono">AUDIT CONTROL CENTER</span>
+            </div>
+          </div>
+        </div>
+
+        <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold rounded-xl transition-all cursor-pointer hover:bg-white/10 text-slate-350">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            Dashboard Overview
+          </button>
+          <button onclick="switchTab('requests')" id="nav-requests" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold rounded-xl transition-all cursor-pointer hover:bg-white/10 text-slate-350">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+            Adhoc Proposals
+          </button>
+          <button onclick="switchTab('plans')" id="nav-plans" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold rounded-xl transition-all cursor-pointer hover:bg-white/10 text-slate-350">
+            <i data-lucide="calendar" class="w-4 h-4"></i>
+            Scheduled Runs
+            <span id="badge-active-plans" class="ml-auto bg-blue-600 text-white text-[9px] px-2 py-0.5 rounded-full font-mono font-bold">0</span>
+          </button>
+          <button onclick="switchTab('templates')" id="nav-templates" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold rounded-xl transition-all cursor-pointer hover:bg-white/10 text-slate-350">
+            <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+            Checklist Blueprints
+          </button>
+          <button onclick="switchTab('library')" id="nav-library" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold rounded-xl transition-all cursor-pointer hover:bg-white/10 text-slate-350">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+            Compliance Standards
+          </button>
+        </nav>
+
+        <!-- Sidebar footer branding info -->
+        <div class="p-6 border-t border-slate-755 text-center text-[10px] text-slate-505 font-medium space-y-1">
+          <div>Standard Operating System</div>
+          <div class="font-mono text-blue-500 font-bold">V2.46 - Secure Local</div>
+        </div>
+      </aside>
+
+      <!-- Main Workspace Panel -->
+      <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        
+        <!-- Top Workspace Bar -->
+        <header class="h-16 bg-white/40 backdrop-blur-md border-b border-white/40 px-8 flex justify-between items-center shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono text-slate-550 font-bold bg-white/65 px-2.5 py-1 rounded-md border border-white/60">
+              QMS SYSTEM SECURE TERMINAL
+            </span>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="text-right">
+              <div class="text-xs font-extrabold text-slate-805">QMS Administrator</div>
+              <span class="text-[10px] text-slate-505 font-mono">QMS-A9901-REG</span>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-slate-805 text-white font-extrabold text-xs flex items-center justify-center border border-white/60">
+              QA
+            </div>
+          </div>
+        </header>
+
+        <!-- Primary App Content Chassis -->
+        <div class="flex-1 p-8 space-y-8 max-w-7xl w-full mx-auto" id="app-workspace-flow">
+          <!-- Views populated dynamically via Render Controllers -->
+        </div>
+      </main>
+    </div>
+
+    <!-- Beautiful floating toast container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm pointer-events-none"></div>
+
+    <!-- Modals Portals -->
+    <div id="modal-portal" class="fixed inset-0 bg-slate-850/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4"></div>
+
+    <!-- Application Engine Script -->
+    <script>
+      // Global Quality Database defaults
+      const INITIAL_TEMPLATES = [
+        {
+          id: "T-801",
+          name: "ISO 9001:2015 Manufacturing Quality Standards",
+          auditType: "Scheduled Manufacturing",
+          coordinators: ["Marcus Vance", "Elena Rostova"],
+          status: true,
+          criteria: [
+            "Verify calibration logs on precision lathe machines",
+            "Inspect warehouse raw storage temperature range histories",
+            "Review feedback defect rates at Quality Control packaging station 4",
+            "Analyze material trace reports on premium carbon shipments"
+          ]
+        },
+        {
+          id: "T-802",
+          name: "Cleanroom Visual Assembly & Particle Checklists",
+          auditType: "Calibration Audit",
+          coordinators: ["Sarah Jenkins"],
+          status: true,
+          criteria: [
+            "Check particle count monitoring gauge certifications",
+            "Inspect sterile suit gown training files for Q2 operators",
+            "Confirm HEPA filter pressure differentials index and seal tests"
+          ]
+        },
+        {
+          id: "T-803",
+          name: "Emergency Boiler Preventive Safety Maintenance",
+          auditType: "Safety Compliance",
+          coordinators: ["Amir Al-Otaibi", "Yuki Tanaka"],
+          status: false,
+          criteria: [
+            "Verify diesel backup generator continuous supply pressure values",
+            "Inspect safety pressure release valve state certificates",
+            "Test operator safety response drills under thermal mock failure"
+          ]
+        }
+      ];
+
+      const INITIAL_REQUESTS = [
+        {
+          id: "REQ-01",
+          title: "Line 5 Assembly Feed Calibration Investigation",
+          auditType: "Calibration Audit",
+          department: "Precision Assembly",
+          proposedDate: "2026-06-20",
+          priority: "Critical",
+          requestorName: "Marcus Vance",
+          reason: "Deviative visual gaps detected during carbon chassis inspection cycles. Calibration of precision feeder requires detailed QMS oversight audit.",
+          status: "Pending Approval"
+        },
+        {
+          id: "REQ-02",
+          title: "ASME Heat Exchanger Vessel Integrity Walkthrough",
+          auditType: "Regulatory Compliance",
+          department: "Thermal Utility Station",
+          proposedDate: "2026-07-15",
+          priority: "High",
+          requestorName: "Sarah Jenkins",
+          reason: "Prerequisite walkthrough to renew structural certification ahead of annual government compliance audit.",
+          status: "Approved"
+        },
+        {
+          id: "REQ-03",
+          title: "Warehouse High-Tier Pallet Weight Load Safety Audit",
+          auditType: "Safety Compliance",
+          department: "Logistics Terminal",
+          proposedDate: "2026-06-28",
+          priority: "Medium",
+          requestorName: "Amir Al-Otaibi",
+          reason: "Assess shelf structural flex, layout adherence, and physical barrier metrics for active warehouse racking systems.",
+          status: "Approved"
+        }
+      ];
+
+      const INITIAL_PLANS = [
+        {
+          id: "PLAN-101",
+          planName: "Q3 Automated Assembly Line 5S Inspection",
+          templateId: "T-801",
+          plant: "Tokyo Assembly Hub",
+          leadAuditor: "Marcus Vance",
+          auditorTeam: ["Elena Rostova", "Yuki Tanaka"],
+          financialYear: "FY26",
+          status: "In Progress",
+          targetStartDate: "2026-06-10",
+          targetEndDate: "2026-06-24",
+          scope: "Comprehensive audit focusing on precision machine calibration thresholds, tool wear logs, and raw feed component traceability indexes."
+        },
+        {
+          id: "PLAN-102",
+          planName: "Bi-Annual Cleanroom Gown & Zone 4 Inspection",
+          templateId: "T-802",
+          plant: "Munich Bio-medical Facility",
+          leadAuditor: "Sarah Jenkins",
+          auditorTeam: ["Amir Al-Otaibi"],
+          financialYear: "FY26",
+          status: "Planned",
+          targetStartDate: "2026-07-01",
+          targetEndDate: "2026-07-12",
+          scope: "Semi-annual evaluation checking airborne particulate indices, gown training credentials, and filter seal test benchmarks."
+        }
+      ];
+
+      const INITIAL_LIBRARY_DOCS = [
+        {
+          id: "DOC-9001",
+          title: "ISO 9001:2015 Quality Management Systems Guidelines",
+          category: "Regulatory Standards",
+          version: "v4.2",
+          lastUpdated: "2026-04-12",
+          fileSize: "2.4 MB",
+          description: "Global quality frameworks specifying operations management criteria, supplier traceability safeguards, and internal calibration routines."
+        },
+        {
+          id: "DOC-14001",
+          title: "ISO 14001 Environmental Environmental Protection Criteria",
+          category: "Standard Guidelines",
+          version: "v2.1",
+          lastUpdated: "2026-02-18",
+          fileSize: "1.8 MB",
+          description: "Regulatory parameters outlines, waste stream disposal audits, hazard containment standards, and mitigation processes."
+        },
+        {
+          id: "DOC-ASME-8",
+          title: "ASME Section VIII Boiler Pressure Component Benchmarks",
+          category: "Certification Blueprints",
+          version: "v1.1",
+          lastUpdated: "2026-05-30",
+          fileSize: "4.1 MB",
+          description: "Engineering threshold safety limits, design tolerances, diagnostic testing procedures, and weld structural inspect protocols."
+        }
+      ];
+
+      const CONSTANTS = {
+        plants: ["Tokyo Assembly Hub", "Munich Bio-medical Facility", "Detroit Automotive Labs", "Singapore Chip Foundry"],
+        auditors: ["Marcus Vance", "Elena Rostova", "Sarah Jenkins", "Amir Al-Otaibi", "Yuki Tanaka"],
+        categories: ["Standard Guidelines", "Regulatory Standards", "Certification Blueprints"]
+      };
+
+      // State Manager
+      let state = {
+        requests: [],
+        plans: [],
+        templates: [],
+        libraryDocs: [],
+        activeTab: "dashboard",
+        
+        // Active selections
+        activeDocId: "DOC-9001",
+        activeRequestId: "REQ-01",
+        activePlanId: "PLAN-101",
+        activeTemplateId: "T-801",
+
+        // Search inputs
+        requestsQuery: "",
+        requestsCol: "title",
+        plansQuery: "",
+        plansCol: "planName",
+        templatesQuery: "",
+        templatesCol: "name",
+        libraryQuery: "",
+        libraryCat: "All Categories"
+      };
+
+      // Initialize Datastore
+      function initStore() {
+        const saved = localStorage.getItem("qms_system_store_v1");
+        if (saved) {
+          try {
+            state = { ...state, ...JSON.parse(saved) };
+          } catch (e) {
+            console.error("Local Storage parse error, utilizing default matrices", e);
+            preloadDefaults();
+          }
+        } else {
+          preloadDefaults();
+        }
+        sanitizeState();
+      }
+
+      function preloadDefaults() {
+        state.requests = [...INITIAL_REQUESTS];
+        state.plans = [...INITIAL_PLANS];
+        state.templates = [...INITIAL_TEMPLATES];
+        state.libraryDocs = [...INITIAL_LIBRARY_DOCS];
+        saveStore();
+      }
+
+      function sanitizeState() {
+        if (!state.requests || state.requests.length === 0) state.requests = [...INITIAL_REQUESTS];
+        if (!state.plans || state.plans.length === 0) state.plans = [...INITIAL_PLANS];
+        if (!state.templates || state.templates.length === 0) state.templates = [...INITIAL_TEMPLATES];
+        if (!state.libraryDocs || state.libraryDocs.length === 0) state.libraryDocs = [...INITIAL_LIBRARY_DOCS];
+      }
+
+      function saveStore() {
+        localStorage.setItem("qms_system_store_v1", JSON.stringify({
+          requests: state.requests,
+          plans: state.plans,
+          templates: state.templates,
+          libraryDocs: state.libraryDocs,
+          activeDocId: state.activeDocId,
+          activeRequestId: state.activeRequestId,
+          activePlanId: state.activePlanId,
+          activeTemplateId: state.activeTemplateId
+        }));
+        // Update badge
+        document.getElementById("badge-active-plans").textContent = state.plans.filter(p => p.status === 'In Progress').length;
+      }
+
+      // Live Notifier Toast Engine
+      function showToast(title, message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `p-4 rounded-xl shadow-lg border text-sm flex items-start gap-3 anim-fade ${
+          type === 'success' 
+            ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
+            : type === 'error'
+              ? 'bg-rose-50 border-rose-200 text-rose-800'
+              : 'bg-blue-50 border-blue-200 text-blue-800'
+        }`;
+        
+        const icon = type === 'success' 
+          ? '<i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0"></i>' 
+          : type === 'error'
+            ? '<i data-lucide="alert-triangle" class="w-5 h-5 text-rose-600 shrink-0"></i>'
+            : '<i data-lucide="info" class="w-5 h-5 text-blue-600 shrink-0"></i>';
+
+        toast.innerHTML = `
+          ${icon}
+          <div>
+            <div class="font-bold text-slate-805">${title}</div>
+            <div class="text-xs opacity-90 mt-0.5">${message}</div>
+          </div>
+        `;
+        container.appendChild(toast);
+        lucide.createIcons();
+        
+        setTimeout(() => {
+          toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+          setTimeout(() => {
+            toast.remove();
+          }, 350);
+        }, 3200);
+      }
+
+      // Universal Tab Switcher
+      function switchTab(tabId) {
+        state.activeTab = tabId;
+        
+        // Remove active class from all sidebar buttons
+        const navIds = ['dashboard', 'requests', 'plans', 'templates', 'library'];
+        navIds.forEach(id => {
+          const btn = document.getElementById(`nav-${id}`);
+          if (btn) {
+            btn.classList.remove('bg-white/10', 'text-white', 'border-l-4', 'border-blue-500');
+            btn.classList.add('text-slate-350');
+          }
+        });
+
+        // Set active class
+        const currentBtn = document.getElementById(`nav-${tabId}`);
+        if (currentBtn) {
+          currentBtn.classList.add('bg-white/10', 'text-white', 'border-l-4', 'border-blue-500');
+          currentBtn.classList.remove('text-slate-350');
+        }
+
+        renderWorkspace();
+      }
+
+      // Workspace Router Routing
+      function renderWorkspace() {
+        const clientWorkspace = document.getElementById("app-workspace-flow");
+        clientWorkspace.innerHTML = "";
+
+        if (state.activeTab === "dashboard") {
+          renderDashboard(clientWorkspace);
+        } else if (state.activeTab === "requests") {
+          renderRequests(clientWorkspace);
+        } else if (state.activeTab === "plans") {
+          renderPlans(clientWorkspace);
+        } else if (state.activeTab === "templates") {
+          renderTemplates(clientWorkspace);
+        } else if (state.activeTab === "library") {
+          renderLibrary(clientWorkspace);
+        }
+        
+        lucide.createIcons();
+        saveStore();
+      }
+
+      // ----------------------------------------------------
+      // 1. DASHBOARD VIEW RENDERER
+      // ----------------------------------------------------
+      function renderDashboard(container) {
+        const totalRuns = state.plans.length;
+        const activeRuns = state.plans.filter(p => p.status === 'In Progress').length;
+        const pendingApprovals = state.requests.filter(r => r.status === 'Pending Approval').length;
+        const templateCount = state.templates.length;
+
+        // Custom Calculations for Quality Status
+        const completionRate = Math.round((state.plans.filter(p => p.status === 'Completed').length / (totalRuns || 1)) * 100);
+        const statusMetricText = activeRuns > 0 && pendingApprovals > 1 ? "Attention Required" : "System Calibrated";
+
+        const viewHTML = `
+          <div class="space-y-8 anim-fade">
+            <!-- Header Welcome Card -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white/20 p-6 rounded-2xl border border-white/40 shadow-xs">
+              <div>
+                <h1 class="text-2xl font-extrabold text-slate-805 tracking-tight flex items-center gap-2">
+                  <i data-lucide="shield" class="w-6 h-6 text-blue-600"></i> Quality Management System Dashboard
+                </h1>
+                <p class="text-slate-555 font-semibold text-xs mt-1">
+                  Active QMS compliance tracking, verification schedules, regulatory standards, and checklists.
+                </p>
+              </div>
+              <div class="flex items-center gap-2 px-3.5 py-1.5 bg-slate-805/5 border border-slate-850/10 rounded-xl text-xs font-bold text-slate-755 font-mono">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                STATION ALIGNED STATE
+              </div>
+            </div>
+
+            <!-- Metric bento grids -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="glass-card p-5 rounded-xl flex items-center justify-between border border-white/40 shadow-xs">
+                <div>
+                  <span class="text-[11px] font-bold text-slate-505 uppercase tracking-wider block">Target Audit Runs</span>
+                  <span class="text-3xl font-extrabold text-slate-805 mt-1 block">${totalRuns}</span>
+                  <span class="text-[10px] text-slate-550 font-bold block mt-1">Across multiple plants</span>
+                </div>
+                <div class="p-3.5 bg-blue-500/10 text-blue-600 rounded-xl border border-white/50">
+                  <i data-lucide="activity" class="w-5 h-5"></i>
+                </div>
+              </div>
+
+              <div class="glass-card p-5 rounded-xl flex items-center justify-between border border-white/40 shadow-xs">
+                <div>
+                  <span class="text-[11px] font-bold text-slate-505 uppercase tracking-wider block">Active Field Runs</span>
+                  <span class="text-3xl font-extrabold text-slate-805 mt-1 block">${activeRuns}</span>
+                  <span class="text-[10px] font-bold text-blue-600 block mt-1 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></span> In Progress Now
+                  </span>
+                </div>
+                <div class="p-3.5 bg-sky-500/10 text-sky-600 rounded-xl border border-white/50">
+                  <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                </div>
+              </div>
+
+              <div class="glass-card p-5 rounded-xl flex items-center justify-between border border-white/40 shadow-xs">
+                <div>
+                  <span class="text-[11px] font-bold text-slate-505 uppercase tracking-wider block">Adhoc Approvals Pending</span>
+                  <span class="text-3xl font-extrabold text-slate-805 mt-1 block">${pendingApprovals}</span>
+                  <span class="text-[10px] text-amber-600 font-bold block mt-1 flex items-center gap-1">
+                    <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Needs Attention
+                  </span>
+                </div>
+                <div class="p-3.5 bg-amber-500/10 text-amber-600 rounded-xl border border-white/50">
+                  <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                </div>
+              </div>
+
+              <div class="glass-card p-5 rounded-xl flex items-center justify-between border border-white/40 shadow-xs">
+                <div>
+                  <span class="text-[11px] font-bold text-slate-505 uppercase tracking-wider block">Approved Blueprints</span>
+                  <span class="text-3xl font-extrabold text-slate-805 mt-1 block">${templateCount}</span>
+                  <span class="text-[10px] text-slate-550 font-bold block mt-1">Directly catalogued</span>
+                </div>
+                <div class="p-3.5 bg-emerald-500/10 text-emerald-600 rounded-xl border border-white/50">
+                  <i data-lucide="file-check-2" class="w-5 h-5"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts/Visual section and Active lists -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              
+              <!-- SVG Charts Panel (7 Cols) -->
+              <div class="lg:col-span-7 glass-card p-6 rounded-2xl border border-white/40 shadow-xs space-y-4">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="font-extrabold text-slate-805 text-base">Continuous Site Compliance Curve</h3>
+                    <p class="text-[11px] font-bold text-slate-550">Quality benchmark metric indexes tracked monthly, FY2026</p>
+                  </div>
+                  <div class="text-xs font-mono font-bold bg-white/60 px-2.5 py-1 rounded-md text-slate-705 border border-white/70">
+                    AVG compliance: 96.8%
+                  </div>
+                </div>
+
+                <!-- Custom SVG compliance metric line chart graph -->
+                <div class="w-full h-64 pt-4 relative bg-white/40 border border-white/20 rounded-xl overflow-hidden p-3">
+                  <svg class="w-full h-full" viewBox="0 0 600 200" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"></stop>
+                        <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"></stop>
+                      </linearGradient>
+                    </defs>
+                    <!-- Grid Lines -->
+                    <line x1="0" y1="40" x2="600" y2="40" stroke="#cbd5e1" stroke-dasharray="4" stroke-opacity="0.5" stroke-width="1"></line>
+                    <line x1="0" y1="100" x2="600" y2="100" stroke="#cbd5e1" stroke-dasharray="4" stroke-opacity="0.5" stroke-width="1"></line>
+                    <line x1="0" y1="160" x2="600" y2="160" stroke="#cbd5e1" stroke-dasharray="4" stroke-opacity="0.5" stroke-width="1"></line>
+                    
+                    <!-- Area fill -->
+                    <path d="M 0,200 L 0,140 L 100,160 L 200,90 L 300,110 L 400,60 L 500,45 L 600,30 L 600,200 Z" fill="url(#chartGrad)"></path>
+                    
+                    <!-- Plot Path Line -->
+                    <path d="M 0,140 L 100,160 L 200,90 L 300,110 L 400,60 L 500,45 L 600,30" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                    
+                    <!-- Checkpoint Indicators -->
+                    <circle cx="100" cy="160" r="5" fill="#2563eb" stroke="#ffffff" stroke-width="2"></circle>
+                    <circle cx="200" cy="90" r="5" fill="#2563eb" stroke="#ffffff" stroke-width="2"></circle>
+                    <circle cx="300" cy="110" r="5" fill="#2563eb" stroke="#ffffff" stroke-width="2"></circle>
+                    <circle cx="400" cy="60" r="5" fill="#2563eb" stroke="#ffffff" stroke-width="2"></circle>
+                    <circle cx="500" cy="45" r="5" fill="#2563eb" stroke="#ffffff" stroke-width="2"></circle>
+                    <circle cx="600" cy="30" r="5" fill="#2563eb" stroke="#ffffff" stroke-width="2"></circle>
+                  </svg>
+                  <div class="absolute bottom-2 inset-x-0 px-4 flex justify-between text-[9px] font-bold text-slate-505 font-mono">
+                    <span>Jan (94.0%)</span>
+                    <span>Mar (93.1%)</span>
+                    <span>May (96.5%)</span>
+                    <span>Jul (95.6%)</span>
+                    <span>Sep (97.8%)</span>
+                    <span>Nov (98.3%)</span>
+                    <span>Dec (99.0%)</span>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 pt-2 text-center">
+                  <div class="p-2 border border-white/50 bg-white/30 rounded-lg">
+                    <span class="text-[10px] text-slate-450 block font-bold">CALIBRATION INCIDENTS</span>
+                    <span class="text-sm font-extrabold text-indigo-600 block mt-0.5">0.02%</span>
+                  </div>
+                  <div class="p-2 border border-white/50 bg-white/30 rounded-lg">
+                    <span class="text-[10px] text-slate-450 block font-bold">PRE-AUDIT ALIGNMENT</span>
+                    <span class="text-sm font-extrabold text-emerald-600 block mt-0.5">99.4%</span>
+                  </div>
+                  <div class="p-2 border border-white/50 bg-white/30 rounded-lg">
+                    <span class="text-[10px] text-slate-450 block font-bold">OUTSTANDING FAILURES</span>
+                    <span class="text-sm font-extrabold text-rose-600 block mt-0.5">None</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Tasks panel (5 Cols) -->
+              <div class="lg:col-span-5 glass-card p-6 rounded-2xl border border-white/40 shadow-xs flex flex-col justify-between">
+                <div>
+                  <h3 class="font-extrabold text-slate-805 text-base">Active Field Assessment Status</h3>
+                  <p class="text-[11px] font-bold text-slate-550 mb-4 pb-3 border-b border-white/40">Real-time status updates on currently running schedules</p>
+                  
+                  <div class="space-y-3.5 max-h-60 overflow-y-auto pr-1">
+                    ${
+                      state.plans.map(p => {
+                        const template = state.templates.find(t => t.id === p.templateId) || { name: 'Unknown Blueprint' };
+                        const statusBadge = p.status === 'In Progress'
+                          ? 'bg-blue-100 text-blue-700 border-blue-200'
+                          : p.status === 'Completed'
+                            ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                            : 'bg-slate-100 text-slate-655 border-slate-205';
+
+                        return `
+                          <div class="p-3 bg-white/40 rounded-xl border border-white/30 flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                              <span class="text-[9px] font-mono bg-white/60 text-slate-705 px-1.5 py-0.5 rounded border border-white/80 uppercase font-bold">${p.financialYear}</span>
+                              <h4 class="text-xs font-extrabold text-slate-805 mt-1 truncate">${p.planName}</h4>
+                              <p class="text-[10px] text-slate-550 mt-1 truncate">${template.name}</p>
+                              <p class="text-[10px] text-slate-450 mt-0.5 flex items-center gap-1 font-semibold">
+                                <i data-lucide="map-pin" class="w-3 h-3"></i> ${p.plant}
+                              </p>
+                            </div>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full font-bold border shrink-0 ${statusBadge}">
+                              ${p.status}
+                            </span>
+                          </div>
+                        `;
+                      }).join('')
+                    }
+                  </div>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-white/35 flex justify-between items-center text-xs text-slate-550 font-bold">
+                  <span>Audit completion index: ${completionRate}%</span>
+                  <button onclick="switchTab('plans')" class="text-blue-750 hover:underline flex items-center gap-1 cursor-pointer">
+                    Manage Plans <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = viewHTML;
+      }
+
+      // ----------------------------------------------------
+      // 2. REQUESTS / PROPOSALS VIEW RENDERER
+      // ----------------------------------------------------
+      function renderRequests(container) {
+        const filtered = state.requests.filter(item => {
+          const val = (item[state.requestsCol] || "").toLowerCase();
+          return val.includes(state.requestsQuery.toLowerCase());
+        });
+
+        const activeRequest = state.requests.find(r => r.id === state.activeRequestId) || state.requests[0];
+
+        const viewHTML = `
+          <div class="space-y-6 anim-fade">
+            <!-- Header section -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/20 p-5 rounded-xl border border-white/35 shadow-xs">
+              <div>
+                <h1 class="text-2xl font-extrabold text-slate-805 tracking-tight flex items-center gap-2">
+                  <i data-lucide="bell" class="w-6 h-6 text-blue-600"></i> Adhoc Audit Proposals Queue
+                </h1>
+                <p class="text-slate-655 font-bold text-xs mt-1">
+                  Propose, analyze, approve, or reject urgent site validation or non-conformance verification tasks.
+                </p>
+              </div>
+              <button onclick="openRequestModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-lg transition-all flex items-center gap-2 shadow-md shadow-blue-500/20 active:scale-95 cursor-pointer">
+                <i data-lucide="plus" class="w-4 h-4 text-white"></i> Propose Audit
+              </button>
+            </div>
+
+            <!-- Global search criteria bar -->
+            <div class="glass-card p-3 rounded-xl border border-white/20 flex flex-wrap items-center gap-3">
+              <div class="min-w-[150px]">
+                <select id="req-column-select" onchange="state.requestsCol = this.value; renderRequests(document.getElementById('app-workspace-flow'))" class="w-full text-xs font-bold px-3 py-2 bg-white/40 border border-white/30 rounded-lg text-slate-755 focus:outline-none">
+                  <option value="title" ${state.requestsCol === 'title' ? 'selected' : ''}>Search Title</option>
+                  <option value="department" ${state.requestsCol === 'department' ? 'selected' : ''}>Search Department</option>
+                  <option value="auditType" ${state.requestsCol === 'auditType' ? 'selected' : ''}>Search Type</option>
+                  <option value="requestorName" ${state.requestsCol === 'requestorName' ? 'selected' : ''}>Search Requestor</option>
+                </select>
+              </div>
+              <div class="relative flex-1 min-w-[200px]">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i data-lucide="search" class="h-3.5 w-3.5 text-slate-500"></i>
+                </span>
+                <input type="text" id="req-search-input" value="${state.requestsQuery}" oninput="state.requestsQuery = this.value; renderRequests(document.getElementById('app-workspace-flow'))" placeholder="Search matching proposal query..." class="w-full text-sm pl-9 pr-4 py-2 bg-white/40 border border-white/25 rounded-lg focus:outline-none focus:bg-white/70 text-slate-805" />
+              </div>
+              <button onclick="exportRequestsCSV()" title="Export CSV Data" class="p-2 border border-white/60 bg-white/40 hover:bg-white/60 rounded-lg text-blue-700 flex items-center justify-center transition-colors shadow-xs shrink-0 cursor-pointer">
+                <i data-lucide="download" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Dual Split Workspace -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              
+              <!-- Left Side list pane (7 Cols) -->
+              <div class="lg:col-span-7 space-y-3 max-h-[550px] overflow-y-auto pr-1">
+                ${
+                  filtered.length === 0 
+                  ? `
+                    <div class="glass-card rounded-xl p-12 text-center border border-dashed border-white/50">
+                      <i data-lucide="inbox" class="w-10 h-10 text-slate-455 mx-auto mb-3"></i>
+                      <p class="text-slate-755 font-bold">No proposals match your filter.</p>
+                    </div>
+                  `
+                  : filtered.map(item => {
+                    const isActive = activeRequest && activeRequest.id === item.id;
+                    const isPending = item.status === 'Pending Approval';
+                    const isApproved = item.status === 'Approved';
+                    const isRejected = item.status === 'Rejected';
+                    
+                    let statusBadge = 'bg-slate-100 text-slate-700 border-slate-200';
+                    if (isPending) statusBadge = 'bg-amber-50 text-amber-700 border-amber-200';
+                    if (isApproved) statusBadge = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                    if (isRejected) statusBadge = 'bg-rose-50 text-rose-700 border-rose-200';
+
+                    let priorityBadge = 'bg-slate-100 text-slate-700';
+                    if (item.priority === 'Critical') priorityBadge = 'bg-rose-600 text-white';
+                    if (item.priority === 'High') priorityBadge = 'bg-amber-600 text-white';
+                    if (item.priority === 'Medium') priorityBadge = 'bg-blue-600 text-white';
+
+                    return `
+                      <div onclick="selectRequest('${item.id}')" class="p-4 rounded-xl transition-all border cursor-pointer flex items-start gap-4 ${
+                        isActive 
+                          ? 'bg-white/65 border-blue-500 shadow-sm' 
+                          : 'bg-white/30 border-white/40 hover:bg-white/50'
+                      }">
+                        <div class="p-2.5 rounded-lg shrink-0 ${isActive ? 'bg-blue-600/10 text-blue-700' : 'bg-white/40 text-slate-505 border border-white/40'}">
+                          <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center justify-between gap-2">
+                            <span class="text-[9px] font-mono bg-white/50 border border-white/60 px-1.5 py-0.5 rounded text-slate-705 font-bold">${item.id}</span>
+                            <span class="text-[9px] px-2 py-0.5 rounded-xs font-bold ${priorityBadge}">${item.priority}</span>
+                          </div>
+                          <h3 class="font-extrabold text-slate-805 text-sm mt-1.5 truncate">${item.title}</h3>
+                          <p class="text-xs text-slate-655 mt-1 line-clamp-2">${item.reason}</p>
+                          
+                          <div class="flex items-center justify-between mt-3 text-[10px] font-bold">
+                            <span class="bg-white/60 text-slate-705 px-2 py-0.5 rounded-xs border border-white/70">${item.department}</span>
+                            <span class="px-2.5 py-0.5 rounded-full border text-[9px] ${statusBadge}">${item.status}</span>
+                          </div>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')
+                }
+              </div>
+
+              <!-- Right Side active details pane (5 Cols) -->
+              <div class="lg:col-span-5">
+                ${
+                  activeRequest 
+                  ? `
+                    <div class="glass-card rounded-xl border border-white/30 p-6 space-y-6">
+                      <div class="flex items-center gap-3 pb-4 border-b border-slate-350/30">
+                        <div class="p-2.5 bg-blue-500/10 text-blue-700 rounded-xl border border-white/40">
+                          <i data-lucide="file-text" class="w-5.5 h-5.5"></i>
+                        </div>
+                        <div>
+                          <span class="text-[9px] font-extrabold bg-blue-600/10 text-blue-800 rounded px-2 py-0.5 border border-blue-500/20">ADHOC PROPOSAL SPEC</span>
+                          <h2 class="text-base font-extrabold text-slate-805 mt-1.5 leading-tight">${activeRequest.title}</h2>
+                        </div>
+                      </div>
+
+                      <div class="space-y-4">
+                        <div>
+                          <h4 class="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Proposal Basis / Intent</h4>
+                          <p class="text-xs text-slate-655 mt-1.5 leading-relaxed font-semibold">${activeRequest.reason}</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">AUDIT TYPE</span>
+                            <span class="text-xs font-bold text-slate-800 block mt-0.5 truncate">${activeRequest.auditType}</span>
+                          </div>
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">TARGET DEPARTMENT</span>
+                            <span class="text-xs font-bold text-slate-800 block mt-0.5 truncate">${activeRequest.department}</span>
+                          </div>
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">PROPOSED DATE</span>
+                            <span class="text-xs font-bold text-slate-850 block mt-0.5 font-mono">${activeRequest.proposedDate}</span>
+                          </div>
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">PROPOSING AUDITOR</span>
+                            <span class="text-xs font-bold text-slate-800 block mt-0.5">${activeRequest.requestorName}</span>
+                          </div>
+                        </div>
+
+                        <div class="p-3 bg-slate-805/5 border border-slate-805/10 rounded-xl flex items-center justify-between">
+                          <span class="text-xs font-bold text-slate-705">Current Status</span>
+                          <span class="text-xs font-extrabold ${
+                            activeRequest.status === 'Approved' ? 'text-emerald-700' : activeRequest.status === 'Rejected' ? 'text-rose-700' : 'text-amber-700'
+                          }">${activeRequest.status}</span>
+                        </div>
+                      </div>
+
+                      ${
+                        activeRequest.status === 'Pending Approval'
+                        ? `
+                          <div class="pt-4 border-t border-slate-350/30 grid grid-cols-2 gap-3">
+                            <button onclick="approveRequest('${activeRequest.id}')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-95">
+                              <i data-lucide="check" class="w-4 h-4"></i> Approve Audit
+                            </button>
+                            <button onclick="rejectRequest('${activeRequest.id}')" class="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-colors font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-95">
+                              <i data-lucide="x" class="w-4 h-4"></i> Reject Request
+                            </button>
+                          </div>
+                        `
+                        : `
+                          <div class="p-3.5 bg-white/35 rounded-xl text-center text-[11px] font-bold text-slate-505 border border-white/60">
+                            Proposal finalized. Action logs locked securely.
+                          </div>
+                        `
+                      }
+                    </div>
+                  `
+                  : `
+                    <div class="glass-card rounded-xl border border-white/30 p-12 text-center text-slate-455">
+                      Select proposed audit item from the queue to run validations.
+                    </div>
+                  `
+                }
+              </div>
+
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = viewHTML;
+      }
+
+      function selectRequest(id) {
+        state.activeRequestId = id;
+        renderRequests(document.getElementById("app-workspace-flow"));
+        lucide.createIcons();
+      }
+
+      function approveRequest(id) {
+        const item = state.requests.find(r => r.id === id);
+        if (item) {
+          item.status = "Approved";
+          showToast("Proposal Approved", `Audit proposal "${item.title}" successfully approved.`);
+          renderRequests(document.getElementById("app-workspace-flow"));
+        }
+      }
+
+      function rejectRequest(id) {
+        const item = state.requests.find(r => r.id === id);
+        if (item) {
+          item.status = "Rejected";
+          showToast("Proposal Rejected", `Audit proposal "${item.title}" successfully marked as rejected.`, "error");
+          renderRequests(document.getElementById("app-workspace-flow"));
+        }
+      }
+
+      // Adhoc submission Modal Flow
+      function openRequestModal() {
+        const modal = document.getElementById("modal-portal");
+        modal.innerHTML = `
+          <div class="glass-card-heavy rounded-2xl border border-white/50 shadow-2xl w-full max-w-lg overflow-hidden anim-fade">
+            <div class="px-6 py-4 border-b border-white/30 bg-white/40 flex items-center justify-between">
+              <h3 class="font-extrabold text-slate-805 flex items-center gap-1.5 text-sm">
+                <i data-lucide="plus" class="w-5 h-5 text-blue-600"></i> Propose Adhoc Compliance Assessment
+              </h3>
+              <button onclick="closeModal()" class="text-slate-505 hover:text-slate-805 text-xl font-bold cursor-pointer p-1">&times;</button>
+            </div>
+            
+            <form onsubmit="handleRequestSubmit(event)" class="p-6 space-y-4">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Proposal Title *</label>
+                <input type="text" id="req-modal-title" required placeholder="e.g. Cleanliness & Visual Storage Benchmarks" class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Audit Type *</label>
+                  <select id="req-modal-type" class="w-full px-3 py-2 glass-input rounded-lg text-sm bg-white/40 text-slate-805 focus:outline-none">
+                    <option value="Calibration Audit">Calibration Audit</option>
+                    <option value="Regulatory Compliance">Regulatory Compliance</option>
+                    <option value="Safety Compliance">Safety Compliance</option>
+                    <option value="Scheduled Manufacturing">Scheduled Manufacturing</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Department *</label>
+                  <input type="text" id="req-modal-dept" required placeholder="e.g. Quality Control" class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Proposed Date *</label>
+                  <input type="date" id="req-modal-date" required class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Priority Tier *</label>
+                  <select id="req-modal-priority" class="w-full px-3 py-2 glass-input rounded-lg text-sm bg-white/40 text-slate-805 focus:outline-none">
+                    <option value="Critical">Critical</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Proposing Auditor Name *</label>
+                <input type="text" id="req-modal-name" required placeholder="e.g. Alex Sterling" class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Assessment Objective / Non-conformance Reason *</label>
+                <textarea id="req-modal-reason" required rows="3" placeholder="Describe the anomalies, incident indicators, or safety reasons requiring an urgent evaluation..." class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none"></textarea>
+              </div>
+
+              <div class="pt-4 border-t border-white/30 flex items-center justify-end gap-3 font-semibold">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 border border-slate-350/50 hover:bg-slate-805/5 text-slate-705 text-xs rounded-lg transition-all cursor-pointer">Cancel</button>
+                <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors shadow-xs cursor-pointer">Submit Proposal</button>
+              </div>
+            </form>
+          </div>
+        `;
+        modal.classList.remove("hidden");
+        lucide.createIcons();
+      }
+
+      function handleRequestSubmit(e) {
+        e.preventDefault();
+        const idNum = state.requests.length + 1;
+        const newReq = {
+          id: `REQ-${idNum < 10 ? '0' + idNum : idNum}`,
+          title: document.getElementById("req-modal-title").value,
+          auditType: document.getElementById("req-modal-type").value,
+          department: document.getElementById("req-modal-dept").value,
+          proposedDate: document.getElementById("req-modal-date").value,
+          priority: document.getElementById("req-modal-priority").value,
+          requestorName: document.getElementById("req-modal-name").value,
+          reason: document.getElementById("req-modal-reason").value,
+          status: "Pending Approval"
+        };
+
+        state.requests.unshift(newReq);
+        state.activeRequestId = newReq.id;
+        showToast("Proposal Submitted", `Adhoc proposal "${newReq.title}" has been securely logged.`);
+        closeModal();
+        renderRequests(document.getElementById("app-workspace-flow"));
+      }
+
+      function exportRequestsCSV() {
+        const rows = [
+          ["ID", "Title", "Audit Type", "Department", "Proposed Date", "Priority", "Requestor", "Status"],
+          ...state.requests.map(r => [r.id, r.title, r.auditType, r.department, r.proposedDate, r.priority, r.requestorName, r.status])
+        ];
+        downloadCSV(rows, "qms_adhoc_requests_index.csv");
+      }
+
+      // ----------------------------------------------------
+      // 3. SCHEDULED PLANS RUNS VIEW RENDERER
+      // ----------------------------------------------------
+      function renderPlans(container) {
+        const filtered = state.plans.filter(p => {
+          const val = (p[state.plansCol] || "").toLowerCase();
+          return val.includes(state.plansQuery.toLowerCase());
+        });
+
+        const activePlan = state.plans.find(p => p.id === state.activePlanId) || state.plans[0];
+
+        const viewHTML = `
+          <div class="space-y-6 anim-fade">
+            <!-- Header Section -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/20 p-5 rounded-xl border border-white/35 shadow-xs">
+              <div>
+                <h1 class="text-2xl font-extrabold text-slate-805 tracking-tight flex items-center gap-2">
+                  <i data-lucide="calendar" class="w-6 h-6 text-blue-600"></i> Active Scheduled Audit Runs
+                </h1>
+                <p class="text-slate-655 font-bold text-xs mt-1">
+                  Draft, customize, schedule, lock schedules, and map joint evaluation auditor vectors across international hubs.
+                </p>
+              </div>
+              <button onclick="openPlanModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-lg transition-all flex items-center gap-2 shadow-md shadow-blue-500/20 active:scale-95 cursor-pointer">
+                <i data-lucide="plus" class="w-4 h-4 text-white"></i> Initiate Schedule Run
+              </button>
+            </div>
+
+            <!-- Search criteria grid -->
+            <div class="glass-card p-3 rounded-xl border border-white/20 flex flex-wrap items-center gap-3">
+              <div class="min-w-[150px]">
+                <select id="plans-column-select" onchange="state.plansCol = this.value; renderPlans(document.getElementById('app-workspace-flow'))" class="w-full text-xs font-bold px-3 py-2 bg-white/40 border border-white/30 rounded-lg text-slate-755 focus:outline-none">
+                  <option value="planName" ${state.plansCol === 'planName' ? 'selected' : ''}>Search Plan Name</option>
+                  <option value="plant" ${state.plansCol === 'plant' ? 'selected' : ''}>Search Plant Location</option>
+                  <option value="leadAuditor" ${state.plansCol === 'leadAuditor' ? 'selected' : ''}>Search Lead Auditor</option>
+                </select>
+              </div>
+              <div class="relative flex-1 min-w-[200px]">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i data-lucide="search" class="h-3.5 w-3.5 text-slate-500"></i>
+                </span>
+                <input type="text" id="plans-search-input" value="${state.plansQuery}" oninput="state.plansQuery = this.value; renderPlans(document.getElementById('app-workspace-flow'))" placeholder="Search active planned schedules..." class="w-full text-xs sm:text-sm pl-9 pr-4 py-2 bg-white/40 border border-white/25 rounded-lg focus:outline-none focus:bg-white/70 text-slate-805" />
+              </div>
+            </div>
+
+            <!-- Split Panel layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              
+              <!-- Left side list (7 Cols) -->
+              <div class="lg:col-span-7 space-y-3 max-h-[550px] overflow-y-auto pr-1">
+                ${
+                  filtered.length === 0
+                  ? `
+                    <div class="glass-card rounded-xl p-12 text-center border border-dashed border-white/50">
+                      <i data-lucide="archive" class="w-10 h-10 text-slate-455 mx-auto mb-3"></i>
+                      <p class="text-slate-755 font-bold">No planned schedules found.</p>
+                    </div>
+                  `
+                  : filtered.map(p => {
+                    const isActive = activePlan && activePlan.id === p.id;
+                    const statusText = p.status;
+                    
+                    let statusBadge = 'bg-slate-100 text-slate-700 border-slate-200';
+                    if (statusText === 'In Progress') statusBadge = 'bg-blue-100 text-blue-700 border-blue-200';
+                    if (statusText === 'Completed') statusBadge = 'bg-emerald-150 text-emerald-800 border-emerald-250';
+                    if (statusText === 'Planned') statusBadge = 'bg-amber-100 text-amber-800 border-amber-200';
+
+                    const template = state.templates.find(t => t.id === p.templateId) || { name: "Manual Matrix Blueprint" };
+
+                    return `
+                      <div onclick="selectPlan('${p.id}')" class="p-4 rounded-xl transition-all border cursor-pointer flex items-start gap-4 ${
+                        isActive 
+                          ? 'bg-white/65 border-blue-500 shadow-sm' 
+                          : 'bg-white/30 border-white/40 hover:bg-white/50'
+                      }">
+                        <div class="p-2.5 rounded-lg shrink-0 ${isActive ? 'bg-blue-600/10 text-blue-700' : 'bg-white/40 text-slate-505 border border-white/40'}">
+                          <i data-lucide="clock" class="w-5 h-5"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center justify-between gap-2">
+                            <span class="text-[9px] font-mono bg-white/50 border border-white/60 px-1.5 py-0.5 rounded text-slate-705 font-bold">${p.id}</span>
+                            <span class="text-[9px] font-bold text-slate-505 uppercase tracking-wide">${p.financialYear}</span>
+                          </div>
+                          <h3 class="font-extrabold text-slate-805 text-sm mt-1.5 truncate">${p.planName}</h3>
+                          <p class="text-xs text-slate-550 mt-1 truncate">${template.name}</p>
+                          
+                          <div class="flex items-center justify-between mt-3 text-[10px] font-bold">
+                            <span class="text-slate-550 font-mono flex items-center gap-1">
+                              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-450"></i> ${p.plant}
+                            </span>
+                            <span class="px-2.5 py-0.5 rounded-full border text-[9px] ${statusBadge}">${statusText}</span>
+                          </div>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')
+                }
+              </div>
+
+              <!-- Right side details pane (5 Cols) -->
+              <div class="lg:col-span-5">
+                ${
+                  activePlan
+                  ? `
+                    <div class="glass-card rounded-xl border border-white/30 p-6 space-y-6">
+                      <div class="flex items-center gap-3 pb-4 border-b border-slate-350/30">
+                        <div class="p-2.5 bg-blue-500/10 text-blue-700 rounded-xl border border-white/40">
+                          <i data-lucide="calendar" class="w-5.5 h-5.5"></i>
+                        </div>
+                        <div>
+                          <span class="text-[9px] font-extrabold bg-blue-600/10 text-blue-800 rounded px-2 py-0.5 border border-blue-500/20">SCHEDULED WORKFLOW</span>
+                          <h2 class="text-base font-extrabold text-slate-805 mt-1.5 leading-tight">${activePlan.planName}</h2>
+                        </div>
+                      </div>
+
+                      <div class="space-y-4">
+                        <div>
+                          <h4 class="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Scope Parameters</h4>
+                          <p class="text-xs text-slate-655 mt-1.5 leading-relaxed font-semibold">${activePlan.scope}</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">OPERATIONAL PLANT</span>
+                            <span class="text-xs font-bold text-slate-800 block mt-0.5 truncate">${activePlan.plant}</span>
+                          </div>
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">LEAD COMPLIANCE LEAD</span>
+                            <span class="text-xs font-bold text-slate-800 block mt-0.5 truncate">${activePlan.leadAuditor}</span>
+                          </div>
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">TARGET START DATE</span>
+                            <span class="text-xs font-bold text-slate-850 block mt-0.5 font-mono">${activePlan.targetStartDate}</span>
+                          </div>
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">TARGET END DATE</span>
+                            <span class="text-xs font-bold text-slate-850 block mt-0.5 font-mono">${activePlan.targetEndDate}</span>
+                          </div>
+                        </div>
+
+                        <div>
+                          <h4 class="text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-2">Joint Auditor Assessors</h4>
+                          <div class="flex flex-wrap gap-1.5">
+                            ${
+                              activePlan.auditorTeam.map(t => 
+                                `<span class="bg-blue-600/10 border border-blue-500/20 text-blue-750 px-2 py-0.5 rounded text-[10px] font-bold">${t}</span>`
+                              ).join('')
+                            }
+                          </div>
+                        </div>
+
+                        <!-- Template criteria benchmarks checklist visualization -->
+                        <div class="border-t border-slate-350/35 pt-4">
+                          <h4 class="text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-2.5">Blueprints Checkpoints Criteria</h4>
+                          <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                            ${
+                              (state.templates.find(t => t.id === activePlan.templateId) || { criteria: ["Check operation processes and logs."] })
+                                .criteria.map((cr, idx) => `
+                                  <div class="p-2 bg-white/30 border border-white/40 rounded text-[11px] font-semibold text-slate-705 flex items-start gap-1.5">
+                                    <span class="font-mono text-[9px] bg-slate-805 text-white w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5">${idx + 1}</span>
+                                    <span>${cr}</span>
+                                  </div>
+                                `).join('')
+                            }
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="pt-4 border-t border-slate-350/30 flex gap-2">
+                        ${
+                          activePlan.status === 'In Progress'
+                          ? `
+                            <button onclick="changePlanStatus('${activePlan.id}', 'Completed')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-95">
+                              <i data-lucide="check" class="w-4 h-4"></i> Lock Audit, Log Findings
+                            </button>
+                          `
+                          : activePlan.status === 'Planned'
+                            ? `
+                              <button onclick="changePlanStatus('${activePlan.id}', 'In Progress')" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-95">
+                                <i data-lucide="play" class="w-4 h-4"></i> Deploy Field Assessors
+                              </button>
+                            `
+                            : `
+                              <div class="p-3 bg-emerald-50 text-emerald-800 text-center text-xs font-bold border border-emerald-200 rounded-xl w-full flex items-center justify-center gap-2">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i> Audit assessment finalized, locked on ledger securely.
+                              </div>
+                            `
+                        }
+                      </div>
+                    </div>
+                  `
+                  : `
+                    <div class="glass-card rounded-xl border border-white/30 p-12 text-center text-slate-455">
+                      Select audit schedules from left list to assess metrics scope.
+                    </div>
+                  `
+                }
+              </div>
+
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = viewHTML;
+      }
+
+      function selectPlan(id) {
+        state.activePlanId = id;
+        renderPlans(document.getElementById("app-workspace-flow"));
+        lucide.createIcons();
+      }
+
+      function changePlanStatus(id, stat) {
+        const item = state.plans.find(p => p.id === id);
+        if (item) {
+          item.status = stat;
+          showToast(`Schedule Locked`, `Assessment Run "${item.planName}" changed to: ${stat}.`);
+          renderPlans(document.getElementById("app-workspace-flow"));
+        }
+      }
+
+      // Schedule Plan Creator Form Modal
+      function openPlanModal() {
+        const modal = document.getElementById("modal-portal");
+        modal.innerHTML = `
+          <div class="glass-card-heavy rounded-2xl border border-white/50 shadow-2xl w-full max-w-lg overflow-hidden anim-fade">
+            <div class="px-6 py-4 border-b border-white/30 bg-white/40 flex items-center justify-between">
+              <h3 class="font-extrabold text-slate-805 flex items-center gap-1.5 text-sm">
+                <i data-lucide="calendar" class="w-5 h-5 text-blue-600"></i> Initiate Compliance Schedule Run
+              </h3>
+              <button onclick="closeModal()" class="text-slate-505 hover:text-slate-805 text-xl font-bold cursor-pointer p-1">&times;</button>
+            </div>
+            
+            <form onsubmit="handlePlanSubmit(event)" class="p-6 space-y-4">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Assessment Schedule Title *</label>
+                <input type="text" id="plan-modal-name" required placeholder="e.g. Q4 Precision Machine Alignment Evaluation" class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Checklist Checklist Blueprint *</label>
+                  <select id="plan-modal-template" class="w-full px-3 py-2 glass-input rounded-lg text-sm bg-white/40 text-slate-805 focus:outline-none">
+                    ${
+                      state.templates.filter(t => t.status).map(t => `<option value="${t.id}">${t.name}</option>`).join('')
+                    }
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Operational Location *</label>
+                  <select id="plan-modal-plant" class="w-full px-3 py-2 glass-input rounded-lg text-sm bg-white/40 text-slate-805 focus:outline-none">
+                    ${
+                      CONSTANTS.plants.map(p => `<option value="${p}">${p}</option>`).join('')
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Lead Compliance Lead *</label>
+                  <select id="plan-modal-lead" class="w-full px-3 py-2 glass-input rounded-lg text-sm bg-white/40 text-slate-805 focus:outline-none">
+                    ${
+                      CONSTANTS.auditors.map(a => `<option value="${a}">${a}</option>`).join('')
+                    }
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Fiscal Schedule Year *</label>
+                  <select id="plan-modal-fy" class="w-full px-3 py-2 glass-input rounded-lg text-sm bg-white/40 text-slate-805 focus:outline-none">
+                    <option value="FY26">FY26 (Current)</option>
+                    <option value="FY27">FY27 (Future)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Audit Start Date *</label>
+                  <input type="date" id="plan-modal-start" required class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Audit Target Deadline *</label>
+                  <input type="date" id="plan-modal-end" required class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-2.5">Joint Auditor Assessors (Choose Multiple) *</label>
+                <div class="grid grid-cols-2 gap-2 p-3 bg-white/30 rounded-lg max-h-24 overflow-y-auto">
+                  ${
+                    CONSTANTS.auditors.map((aud, index) => `
+                      <label class="flex items-center gap-2 text-xs font-semibold text-slate-705">
+                        <input type="checkbox" name="plan_modal_team" value="${aud}" class="rounded border-slate-350 focus:ring-blue-500" ${index <= 1 ? 'checked' : ''} />
+                        ${aud}
+                      </label>
+                    `).join('')
+                  }
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Operational Scope Details *</label>
+                <textarea id="plan-modal-scope" required rows="3" placeholder="Provide operational scope parameters, process sequences, and certification goals that the audit team must examine..." class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none"></textarea>
+              </div>
+
+              <div class="pt-4 border-t border-white/30 flex items-center justify-end gap-3 font-semibold">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 border border-slate-350/50 hover:bg-slate-805/5 text-slate-705 text-xs rounded-lg transition-all cursor-pointer">Cancel</button>
+                <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors shadow-xs cursor-pointer">Lock & Publish</button>
+              </div>
+            </form>
+          </div>
+        `;
+        modal.classList.remove("hidden");
+        lucide.createIcons();
+      }
+
+      function handlePlanSubmit(e) {
+        e.preventDefault();
+        const chks = document.getElementsByName("plan_modal_team");
+        const teamSelected = [];
+        chks.forEach(chk => { if (chk.checked) teamSelected.push(chk.value); });
+
+        if (teamSelected.length === 0) {
+          alert("Must select at least one joint auditor team member!");
+          return;
+        }
+
+        const idNum = state.plans.length + 101;
+        const newPlan = {
+          id: `PLAN-${idNum}`,
+          planName: document.getElementById("plan-modal-name").value,
+          templateId: document.getElementById("plan-modal-template").value,
+          plant: document.getElementById("plan-modal-plant").value,
+          leadAuditor: document.getElementById("plan-modal-lead").value,
+          auditorTeam: teamSelected,
+          financialYear: document.getElementById("plan-modal-fy").value,
+          status: "Planned",
+          targetStartDate: document.getElementById("plan-modal-start").value,
+          targetEndDate: document.getElementById("plan-modal-end").value,
+          scope: document.getElementById("plan-modal-scope").value
+        };
+
+        state.plans.unshift(newPlan);
+        state.activePlanId = newPlan.id;
+        showToast("Schedule Locked", `Schedule Run "${newPlan.planName}" is published successfully.`);
+        closeModal();
+        renderPlans(document.getElementById("app-workspace-flow"));
+      }
+
+      // ----------------------------------------------------
+      // 4. CHECKLIST BLUEPRINTS VIEW RENDERER
+      // ----------------------------------------------------
+      function renderTemplates(container) {
+        const filtered = state.templates.filter(item => {
+          const val = (item[state.templatesCol] || "").toLowerCase();
+          return val.includes(state.templatesQuery.toLowerCase());
+        });
+
+        const activeTemplate = state.templates.find(t => t.id === state.activeTemplateId) || state.templates[0];
+
+        const viewHTML = `
+          <div class="space-y-6 anim-fade">
+            <!-- Header items wrapper -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/20 p-5 rounded-xl border border-white/35 shadow-xs">
+              <div>
+                <h1 class="text-2xl font-extrabold text-slate-805 tracking-tight flex items-center gap-2">
+                  <i data-lucide="clipboard-list" class="w-6 h-6 text-blue-600"></i> QMS Template Blueprint Library
+                </h1>
+                <p class="text-slate-655 font-bold text-xs mt-1">
+                  Draft standardized custom checklists blueprints, set auditors, and define compliance checkpoints rules.
+                </p>
+              </div>
+              <button onclick="openTemplateFormModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-lg transition-all flex items-center gap-2 shadow-md shadow-blue-500/20 active:scale-95 cursor-pointer">
+                <i data-lucide="plus" class="w-4 h-4 text-white"></i> Create Checklist Blueprint
+              </button>
+            </div>
+
+            <!-- Search inputs bar -->
+            <div class="glass-card p-3 rounded-xl border border-white/25 flex flex-wrap items-center gap-3">
+              <div class="min-w-[150px]">
+                <select id="temp-column-select" onchange="state.templatesCol = this.value; renderTemplates(document.getElementById('app-workspace-flow'))" class="w-full text-xs font-bold px-3 py-2 bg-white/40 border border-white/30 rounded-lg text-slate-755 focus:outline-none">
+                  <option value="name" ${state.templatesCol === 'name' ? 'selected' : ''}>Search Name</option>
+                  <option value="auditType" ${state.templatesCol === 'auditType' ? 'selected' : ''}>Search Audit Type</option>
+                </select>
+              </div>
+              <div class="relative flex-1 min-w-[200px]">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i data-lucide="search" class="h-3.5 w-3.5 text-slate-500"></i>
+                </span>
+                <input type="text" id="temp-search-input" value="${state.templatesQuery}" oninput="state.templatesQuery = this.value; renderTemplates(document.getElementById('app-workspace-flow'))" placeholder="Search matching blueprint checklists..." class="w-full text-sm pl-9 pr-4 py-2 bg-white/40 border border-white/25 rounded-lg focus:outline-none focus:bg-white/70 text-slate-805" />
+              </div>
+              <button onclick="exportTemplatesCSV()" title="Export CSV Data" class="p-2 border border-white/60 bg-white/40 hover:bg-white/60 rounded-lg text-blue-700 flex items-center justify-center transition-colors shadow-xs shrink-0 cursor-pointer">
+                <i data-lucide="download" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Dual view layout structure -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              
+              <!-- Left list directories mapping (7 Cols) -->
+              <div class="lg:col-span-7 space-y-3 max-h-[550px] overflow-y-auto pr-1">
+                ${
+                  filtered.length === 0
+                  ? `
+                    <div class="glass-card rounded-xl p-12 text-center border border-dashed border-white/50">
+                      <i data-lucide="folder" class="w-10 h-10 text-slate-455 mx-auto mb-3"></i>
+                      <p class="text-slate-755 font-bold">No blueprints found.</p>
+                    </div>
+                  `
+                  : filtered.map(item => {
+                    const isActive = activeTemplate && activeTemplate.id === item.id;
+                    const isStatus = item.status;
+                    
+                    return `
+                      <div onclick="selectTemplate('${item.id}')" class="p-4 rounded-xl transition-all border cursor-pointer flex items-start gap-4 ${
+                        isActive 
+                          ? 'bg-white/65 border-blue-500 shadow-sm' 
+                          : 'bg-white/30 border-white/40 hover:bg-white/50'
+                      }">
+                        <div class="p-2.5 rounded-lg shrink-0 ${isActive ? 'bg-blue-600/10 text-blue-700' : 'bg-white/40 text-slate-505 border border-white/40'}">
+                          <i data-lucide="file-check" class="w-5 h-5"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center justify-between gap-2">
+                            <span class="text-[9px] font-mono bg-white/50 border border-white/60 px-1.5 py-0.5 rounded text-slate-705 font-bold">${item.id}</span>
+                            <span class="px-2 py-0.5 rounded-full border text-[9px] font-bold ${isStatus ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-slate-100 text-slate-700 border-slate-200'}">
+                              ${isStatus ? "Active System" : "Inactive Draft"}
+                            </span>
+                          </div>
+                          <h3 class="font-extrabold text-slate-805 text-sm mt-1.5 truncate">${item.name}</h3>
+                          <p class="text-xs text-slate-550 mt-1">${item.auditType}</p>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')
+                }
+              </div>
+
+              <!-- Right detailed layout viewer panel (5 Cols) -->
+              <div class="lg:col-span-5 hidden lg:block">
+                ${
+                  activeTemplate
+                  ? `
+                    <div class="glass-card rounded-xl border border-white/30 p-6 space-y-6">
+                      <div class="flex items-center gap-3 pb-4 border-b border-slate-350/30">
+                        <div class="p-2.5 bg-blue-500/10 text-blue-700 rounded-xl border border-white/40">
+                          <i data-lucide="bookmark" class="w-5.5 h-5.5"></i>
+                        </div>
+                        <div>
+                          <span class="text-[9px] font-extrabold bg-blue-600/10 text-blue-800 rounded px-2 py-0.5 border border-blue-500/20">BLUEPRINT DEFINITION</span>
+                          <h2 class="text-base font-extrabold text-slate-805 mt-1.5 leading-tight">${activeTemplate.name}</h2>
+                        </div>
+                      </div>
+
+                      <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg col-span-2">
+                            <span class="text-[9px] text-slate-450 font-bold block">TEMPLATE AUDIT PROTOCOL CATEGORY</span>
+                            <span class="text-xs font-bold text-slate-800 block mt-0.5">${activeTemplate.auditType}</span>
+                          </div>
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg col-span-2">
+                            <span class="text-[9px] text-slate-450 font-bold block">ASSIGNED COMPLIANCE COORDINATORS</span>
+                            <span class="text-xs font-bold text-slate-800 block mt-0.5">${activeTemplate.coordinators.join(', ')}</span>
+                          </div>
+                        </div>
+
+                        <!-- Inside checklist checkpoint checks list -->
+                        <div>
+                          <h4 class="text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-2.5">Blueprints Checkpoints Standard</h4>
+                          <div class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                            ${
+                              activeTemplate.criteria.map((ct, index) => `
+                                <div class="p-3 bg-white/45 border border-white/55 rounded-xl text-xs font-semibold text-slate-755 flex items-start gap-2">
+                                  <span class="w-4 h-4 bg-blue-600 text-white rounded-full flex items-center justify-center font-mono text-[9px] font-bold shrink-0 mt-0.5">${index + 1}</span>
+                                  <span>${ct}</span>
+                                </div>
+                              `).join('')
+                            }
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="pt-4 border-t border-slate-350/35 flex justify-between items-center text-xs text-slate-550 font-bold">
+                        <span>Total criteria items: ${activeTemplate.criteria.length}</span>
+                        <span class="font-mono text-[10px]">Registry Catalog ID: ${activeTemplate.id}</span>
+                      </div>
+                    </div>
+                  `
+                  : `
+                    <div class="glass-card rounded-xl border border-white/30 p-12 text-center text-slate-455">
+                      Select blueprint template from left catalog lists to inspect standard checklines.
+                    </div>
+                  `
+                }
+              </div>
+
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = viewHTML;
+      }
+
+      function selectTemplate(id) {
+        state.activeTemplateId = id;
+        renderTemplates(document.getElementById("app-workspace-flow"));
+        lucide.createIcons();
+      }
+
+      // Template Creator Form Modal
+      let tempModalCriteria = [];
+
+      function openTemplateFormModal() {
+        tempModalCriteria = ["Ensure testing calibrations match metric logs.", "Check employee certification records."];
+        renderTemplateModalContent();
+      }
+
+      function renderTemplateModalContent() {
+        const modal = document.getElementById("modal-portal");
+        modal.innerHTML = `
+          <div class="glass-card-heavy rounded-2xl border border-white/50 shadow-2xl w-full max-w-lg overflow-hidden anim-fade">
+            <div class="px-6 py-4 border-b border-white/30 bg-white/40 flex items-center justify-between">
+              <h3 class="font-extrabold text-slate-805 flex items-center gap-1.5 text-sm">
+                <i data-lucide="clipboard-list" class="w-5 h-5 text-blue-600"></i> Create QMS Checklist Template
+              </h3>
+              <button onclick="closeModal()" class="text-slate-505 hover:text-slate-805 text-xl font-bold cursor-pointer p-1">&times;</button>
+            </div>
+            
+            <form onsubmit="handleTemplateSubmit(event)" class="p-6 space-y-4">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Checklist Template Title *</label>
+                <input type="text" id="temp-modal-name" required placeholder="e.g. Cleanroom Visual Particulate & HEPA Filter Benchmarks" class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Audit Protocol Type *</label>
+                  <select id="temp-modal-type" class="w-full px-3 py-2 glass-input rounded-lg text-sm bg-white/40 text-slate-805 focus:outline-none">
+                    <option value="Calibration Audit">Calibration Audit</option>
+                    <option value="Regulatory Compliance">Regulatory Compliance</option>
+                    <option value="Safety Compliance">Safety Compliance</option>
+                    <option value="Scheduled Manufacturing">Scheduled Manufacturing</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Assigned Lead Coordinators (Split by comma) *</label>
+                  <input type="text" id="temp-modal-coords" required placeholder="Marcus Vance, Elena Rostova" class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+                </div>
+              </div>
+
+              <!-- Checkpoint Criteria manager rows -->
+              <div class="border-t border-slate-350/30 pt-4">
+                <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-2">Checklist Standard Checkpoints *</label>
+                
+                <!-- Criteria builder interface -->
+                <div class="flex gap-2 mb-3">
+                  <input type="text" id="temp-criteria-input" placeholder="Add custom checkpoint line..." class="flex-1 px-3 py-2 bg-white/30 border border-slate-350/50 rounded-lg text-xs text-slate-805 focus:outline-none focus:bg-white/75" />
+                  <button type="button" onclick="addModalCriteria()" class="px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer">Add Check</button>
+                </div>
+
+                <div class="space-y-1.5 max-h-32 overflow-y-auto p-2 bg-slate-805/5 border border-slate-805/10 rounded-xl" id="temp-modal-criteria-list">
+                  <!-- Injected check row details -->
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-white/30 flex items-center justify-end gap-3 font-semibold font-sans">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 border border-slate-350/50 hover:bg-slate-805/5 text-slate-705 text-xs rounded-lg transition-all cursor-pointer">Cancel</button>
+                <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors shadow-xs cursor-pointer">Save Blueprint</button>
+              </div>
+            </form>
+          </div>
+        `;
+        modal.classList.remove("hidden");
+        updateModalCriteriaList();
+        lucide.createIcons();
+      }
+
+      function addModalCriteria() {
+        const inp = document.getElementById("temp-criteria-input");
+        if (inp && inp.value.trim().length > 0) {
+          tempModalCriteria.push(inp.value.trim());
+          inp.value = "";
+          updateModalCriteriaList();
+        }
+      }
+
+      function deleteModalCriteria(index) {
+        tempModalCriteria.splice(index, 1);
+        updateModalCriteriaList();
+      }
+
+      function updateModalCriteriaList() {
+        const container = document.getElementById("temp-modal-criteria-list");
+        if (!container) return;
+
+        if (tempModalCriteria.length === 0) {
+          container.innerHTML = `<span class="text-[10px] text-slate-505 block text-center font-bold">No standard checkpoints defined yet.</span>`;
+          return;
+        }
+
+        container.innerHTML = tempModalCriteria.map((item, idx) => `
+          <div class="flex items-center justify-between gap-3 p-2 bg-white/45 rounded border border-white/60 text-[11px] font-semibold text-slate-755">
+            <span class="truncate">${idx + 1}. ${item}</span>
+            <button type="button" onclick="deleteModalCriteria(${idx})" class="text-rose-600 hover:text-rose-800 font-bold shrink-0 cursor-pointer">&times;</button>
+          </div>
+        `).join('');
+      }
+
+      function handleTemplateSubmit(e) {
+        e.preventDefault();
+        if (tempModalCriteria.length === 0) {
+          alert("Must add at least one checkpoint criteria!");
+          return;
+        }
+
+        const countNum = state.templates.length + 801;
+        const leadStr = document.getElementById("temp-modal-coords").value;
+        const coordsArr = leadStr.split(",").map(s => s.trim()).filter(s => s.length > 0);
+
+        const newTemp = {
+          id: `T-${countNum}`,
+          name: document.getElementById("temp-modal-name").value,
+          auditType: document.getElementById("temp-modal-type").value,
+          coordinators: coordsArr,
+          status: true,
+          criteria: [...tempModalCriteria]
+        };
+
+        state.templates.unshift(newTemp);
+        state.activeTemplateId = newTemp.id;
+        showToast("Blueprint Saved", `Template Blueprint "${newTemp.name}" created.`);
+        closeModal();
+        renderTemplates(document.getElementById("app-workspace-flow"));
+      }
+
+      function exportTemplatesCSV() {
+        const rows = [
+          ["ID", "Template Name", "Audit Protocol Type", "Coordinators", "Status", "Critera Items Count"],
+          ...state.templates.map(t => [t.id, t.name, t.auditType, t.coordinators.join(' | '), t.status ? 'Active' : 'Inactive', t.criteria.length])
+        ];
+        downloadCSV(rows, "qms_template_blueprints_directory.csv");
+      }
+
+      // ----------------------------------------------------
+      // 5. COMPLIANCE STANDARDS VIEW RENDERER
+      // ----------------------------------------------------
+      function renderLibrary(container) {
+        const categories = ["All Categories", ...CONSTANTS.categories];
+        
+        const filteredDocs = state.libraryDocs.filter(doc => {
+          const val = `${doc.title} ${doc.id} ${doc.description}`.toLowerCase();
+          const matchesQuery = val.includes(state.libraryQuery.toLowerCase());
+          const matchesCat = state.libraryCat === "All Categories" || doc.category === state.libraryCat;
+          return matchesQuery && matchesCat;
+        });
+
+        const activeDoc = state.libraryDocs.find(d => d.id === state.activeDocId) || state.libraryDocs[0];
+
+        const viewHTML = `
+          <div class="space-y-6 anim-fade">
+            <!-- Header items wrapper -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/20 p-5 rounded-xl border border-white/35 shadow-xs">
+              <div>
+                <h1 class="text-2xl font-extrabold text-slate-805 tracking-tight flex items-center gap-2">
+                  <i data-lucide="book-open" class="w-6 h-6 text-blue-600"></i> Compliance Standards Registry Library
+                </h1>
+                <p class="text-slate-655 font-bold text-xs mt-1">
+                  Access regulatory standards, ISO publications, ASME specifications, and file footprints references.
+                </p>
+              </div>
+              <button onclick="openLibraryRegModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20 active:scale-95 cursor-pointer">
+                <i data-lucide="plus" class="w-4 h-4"></i> Link Standard Reference
+              </button>
+            </div>
+
+            <!-- Custom filter dashboard container -->
+            <div class="glass-card p-4 rounded-xl border border-white/25 shadow-xs space-y-4">
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i data-lucide="search" class="h-4 w-4 text-slate-500"></i>
+                </span>
+                <input type="text" id="library-search-input" value="${state.libraryQuery}" oninput="state.libraryQuery = this.value; renderLibrary(document.getElementById('app-workspace-flow'))" placeholder="Search standard guidelines, checklists, ISO keys, or document codes..." class="w-full pl-10 pr-4 py-2 bg-white/40 border border-white/25 rounded-lg focus:outline-none focus:bg-white/70 text-sm transition-all text-slate-805 placeholder-slate-455" />
+              </div>
+
+              <!-- Categories row checklist list -->
+              <div class="flex flex-wrap gap-2.5">
+                ${
+                  categories.map(cat => {
+                    const isActive = state.libraryCat === cat;
+                    return `
+                      <button onclick="setLibraryCategory('${cat}')" class="px-3.5 py-1.5 text-xs font-bold rounded-full transition-all border cursor-pointer ${
+                        isActive 
+                          ? 'bg-slate-805 text-white border-slate-805 shadow-xs' 
+                          : 'bg-white/40 text-slate-705 border-white/60 hover:bg-white/70'
+                      }">${cat}</button>
+                    `;
+                  }).join('')
+                }
+              </div>
+            </div>
+
+            <!-- Dual view mapping split panel -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              
+              <!-- Left list files panel (7 Cols) -->
+              <div class="lg:col-span-7 space-y-3 max-h-[580px] overflow-y-auto pr-1">
+                ${
+                  filteredDocs.length === 0
+                  ? `
+                    <div class="glass-card rounded-xl p-12 text-center border border-dashed border-white/50">
+                      <i data-lucide="file-text" class="w-10 h-10 text-slate-455 mx-auto mb-3"></i>
+                      <p class="text-slate-800 font-extrabold">No safety publications match your filters.</p>
+                    </div>
+                  `
+                  : filteredDocs.map(doc => {
+                    const isActive = activeDoc && activeDoc.id === doc.id;
+                    return `
+                      <div onclick="selectLibraryDoc('${doc.id}')" class="p-4 rounded-xl transition-all border cursor-pointer flex items-start gap-4 ${
+                        isActive 
+                          ? 'bg-white/65 border-blue-500 shadow-md scale-[1.01]' 
+                          : 'bg-white/30 border-white/40 hover:bg-white/50'
+                      }">
+                        <div class="p-2.5 rounded-lg shrink-0 ${isActive ? 'bg-blue-600/10 text-blue-750' : 'bg-white/40 text-slate-505 border border-white/40'}">
+                          <i data-lucide="file-text" class="w-5 h-5"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center justify-between gap-2">
+                            <span class="text-[9px] font-mono bg-white/50 border border-white/60 px-1.5 py-0.5 rounded text-slate-705 font-bold">${doc.id}</span>
+                            <span class="text-[9px] text-slate-550 font-mono font-bold">${doc.fileSize}</span>
+                          </div>
+                          <h3 class="font-extrabold text-slate-850 mt-1 truncate text-sm">${doc.title}</h3>
+                          <p class="text-xs text-slate-655 mt-1 line-clamp-2 leading-relaxed">${doc.description}</p>
+                          
+                          <div class="flex items-center justify-between mt-3 text-[10px] font-bold">
+                            <span class="bg-white/50 text-[9px] border border-white/70 text-slate-755 px-2 py-0.5 rounded-xs">${doc.category}</span>
+                            <span class="text-blue-750 text-[10px]">Version ${doc.version}</span>
+                          </div>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')
+                }
+              </div>
+
+              <!-- Right detail parameters reader (5 Cols) -->
+              <div class="lg:col-span-5">
+                ${
+                  activeDoc
+                  ? `
+                    <div class="glass-card rounded-xl border border-white/30 shadow-md p-6 space-y-6">
+                      <div class="flex items-center gap-3 pb-4 border-b border-white/20">
+                        <div class="p-3 bg-blue-500/10 text-blue-750 rounded-xl border border-white/40">
+                          <i data-lucide="check-circle" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                          <span class="px-2.5 py-0.5 bg-blue-600/10 text-blue-800 rounded text-[10px] font-extrabold font-mono border border-blue-500/20">APPROVED REGISTRY PUBLISHED</span>
+                          <h2 class="text-base font-extrabold text-slate-805 mt-1.5 leading-tight">${activeDoc.title}</h2>
+                        </div>
+                      </div>
+
+                      <div class="space-y-4">
+                        <div>
+                          <h4 class="text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-1">Standard Scope Summary</h4>
+                          <p class="text-xs text-slate-655 leading-relaxed font-semibold">${activeDoc.description}</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">CATEGORY</span>
+                            <span class="text-xs font-bold text-slate-850 block mt-0.5 truncate">${activeDoc.category}</span>
+                          </div>
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">REVISION VERSION</span>
+                            <span class="text-xs font-bold text-slate-850 block mt-0.5 font-mono">${activeDoc.version}</span>
+                          </div>
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">LAST RE-VERIFIED</span>
+                            <span class="text-xs font-bold text-slate-850 block mt-0.5 font-mono">${activeDoc.lastUpdated}</span>
+                          </div>
+                          <div class="p-3 bg-white/40 border border-white/50 rounded-lg">
+                            <span class="text-[9px] text-slate-450 font-bold block">STATIC FOOTPRINT</span>
+                            <span class="text-xs font-bold text-slate-850 block mt-0.5 font-mono">${activeDoc.fileSize}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="pt-4 border-t border-white/20 flex flex-col gap-2">
+                        <button onclick="simulatePdfDownload('${activeDoc.title}')" class="w-full py-2.5 bg-slate-805 text-white hover:bg-slate-900 rounded-lg transition-all font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-95">
+                          <i data-lucide="download" class="w-4 h-4 text-white animate-bounce"></i> Download Approved Publication PDF
+                        </button>
+                        <div class="p-2.5 bg-emerald-50 border border-emerald-100 rounded-xl text-[10px] text-emerald-800 text-center font-bold flex items-center justify-center gap-1">
+                          <i data-lucide="shield" class="w-3.5 h-3.5 text-emerald-600"></i> Standard verified via secure active QMS registry ledger
+                        </div>
+                      </div>
+                    </div>
+                  `
+                  : `
+                    <div class="glass-card rounded-xl border border-white/30 p-12 text-center text-slate-455">
+                      Select publications to review metadata outlines.
+                    </div>
+                  `
+                }
+              </div>
+
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = viewHTML;
+      }
+
+      function selectLibraryDoc(id) {
+        state.activeDocId = id;
+        renderLibrary(document.getElementById("app-workspace-flow"));
+        lucide.createIcons();
+      }
+
+      function setLibraryCategory(cat) {
+        state.libraryCat = cat;
+        renderLibrary(document.getElementById("app-workspace-flow"));
+        lucide.createIcons();
+      }
+
+      function simulatePdfDownload(title) {
+        showToast("Publication Downloaded", `Completed file transfer of standard framework parameters: "${title}".`);
+      }
+
+      // Add Document reference modal
+      function openLibraryRegModal() {
+        const modal = document.getElementById("modal-portal");
+        modal.innerHTML = `
+          <div class="glass-card-heavy rounded-2xl border border-white/50 shadow-2xl w-full max-w-lg overflow-hidden anim-fade">
+            <div class="px-6 py-4 border-b border-white/30 bg-white/40 flex items-center justify-between">
+              <h3 class="font-extrabold text-slate-805 flex items-center gap-1.5 text-sm">
+                <i data-lucide="book-open" class="w-5 h-5 text-blue-600"></i> Link Standard Certified Reference
+              </h3>
+              <button onclick="closeModal()" class="text-slate-505 hover:text-slate-805 text-xl font-bold cursor-pointer p-1">&times;</button>
+            </div>
+            
+            <form onsubmit="handleLibrarySubmit(event)" class="p-6 space-y-4">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Standard Document Title *</label>
+                <input type="text" id="lib-modal-title" required placeholder="e.g. ISO 45001 Occupational Health Safety" class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Standard Category *</label>
+                  <select id="lib-modal-category" class="w-full px-3 py-2 glass-input rounded-lg text-sm bg-white/40 text-slate-805 focus:outline-none">
+                    ${
+                      CONSTANTS.categories.map(c => `<option value="${c}">${c}</option>`).join('')
+                    }
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Index Code / Key *</label>
+                  <input type="text" id="lib-modal-id" required placeholder="e.g. DOC-9904" class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Revision Level Code *</label>
+                  <input type="text" id="lib-modal-version" required placeholder="e.g. v2.1" class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Index Footprint Size *</label>
+                  <select id="lib-modal-size" class="w-full px-3 py-2 glass-input rounded-lg text-sm bg-white/40 text-slate-805 focus:outline-none">
+                    <option value="1.2 MB">1.2 MB</option>
+                    <option value="2.5 MB">2.5 MB</option>
+                    <option value="3.6 MB">3.6 MB</option>
+                    <option value="4.8 MB">4.8 MB</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-slate-505 uppercase tracking-wider mb-1">Brief Description of Guidelines *</label>
+                <textarea id="lib-modal-description" required rows="3" placeholder="Outline primary validation procedures, metrics targets, auditor recommendations, and checkpoints safety boundaries..." class="w-full px-3 py-2 glass-input rounded-lg text-sm text-slate-805 focus:outline-none"></textarea>
+              </div>
+
+              <div class="pt-4 border-t border-white/30 flex items-center justify-end gap-3 font-semibold">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 border border-slate-350/50 hover:bg-slate-805/5 text-slate-705 text-xs rounded-lg transition-all cursor-pointer">Cancel</button>
+                <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors shadow-xs cursor-pointer">Register Code Link</button>
+              </div>
+            </form>
+          </div>
+        `;
+        modal.classList.remove("hidden");
+        lucide.createIcons();
+      }
+
+      function handleLibrarySubmit(e) {
+        e.preventDefault();
+        const codeKey = document.getElementById("lib-modal-id").value.trim().toUpperCase();
+        
+        // check duplicate
+        if (state.libraryDocs.some(d => d.id === codeKey)) {
+          alert(`Document registry entry with key code ${codeKey} already exists!`);
+          return;
+        }
+
+        const dateNow = new Date().toISOString().split("T")[0];
+
+        const newDoc = {
+          id: codeKey,
+          title: document.getElementById("lib-modal-title").value,
+          category: document.getElementById("lib-modal-category").value,
+          version: document.getElementById("lib-modal-version").value,
+          lastUpdated: dateNow,
+          fileSize: document.getElementById("lib-modal-size").value,
+          description: document.getElementById("lib-modal-description").value
+        };
+
+        state.libraryDocs.unshift(newDoc);
+        state.activeDocId = newDoc.id;
+        showToast("Standard Registered", `Publication document Reference "${newDoc.title}" registered successfully.`);
+        closeModal();
+        renderLibrary(document.getElementById("app-workspace-flow"));
+      }
+
+
+      // ----------------------------------------------------
+      // UTILITY HELPER CODE
+      // ----------------------------------------------------
+      function closeModal() {
+        const modal = document.getElementById("modal-portal");
+        modal.innerHTML = "";
+        modal.classList.add("hidden");
+      }
+
+      function downloadCSV(rows, fileName) {
+        const csvContent = "data:text/csv;charset=utf-8," 
+          + rows.map(r => r.map(cell => `"${(cell || "").toString().replace(/"/g, '""')}"`).join(",")).join("\n");
+        
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast("CSV Download Initiated", `Your ledger download has been processed as ${fileName}`);
+      }
+
+      // Initial Bootstrap execution
+      window.addEventListener('DOMContentLoaded', () => {
+        initStore();
+        switchTab("dashboard");
+      });
+    </script>
   </body>
 </html>
-
